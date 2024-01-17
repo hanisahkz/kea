@@ -1,0 +1,32 @@
+name: Deploy app
+run-name: Deployment done by ${{ github.actor }}
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        description: AWS env to deploy to
+        required: true
+        default: "staging"
+        type: choice
+        options:
+          - staging
+jobs:
+  deploy:
+    name:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ["18.x"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+      - name: Clean install project
+        run: npm ci && npm run build
+      - name: Deploy app
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEYS }}
+          AWS_DEFAULT_REGION: us-east-1
+        run: npx sst deploy --stage nz-staging
