@@ -1,0 +1,75 @@
+// The defaul configuration
+specification {
+    element persona {
+        style {
+            color indigo
+        }
+    }
+    element system {
+        style {
+            color indigo
+        }
+    }
+
+    element container {
+        style {
+            color indigo
+        }
+    }
+
+    element component {
+        style {
+            color indigo
+        }
+    }
+}
+
+model {
+    // Use this structure: https://likec4.dev/docs/dsl/model/#element-properties
+    keaUser = persona "Kea User" "Any users" "[Person]" {
+        -> keaApp "use app to check data integrity"
+    }
+
+    keaApp = system "Kea App" "Allows users to check data integrity" "[System]" {
+        spa = container "SPA" "Built on NextJS" "[Container]" {
+            style {
+                shape browser
+            }
+
+            routingService = component "IntegrityPage" "Renders integrity page" "[Component]"
+        }
+
+        db = container "Local Storage" "Stores details such as id, baseline value, hashes, integrity status, timestamps" "[Container]" {
+            style {
+                shape storage
+            }
+        }
+
+        s3 = container "S3 bucket" "Hosts frontend assets" "[Container]" 
+
+        // relationships between containers
+        spa -> db "[HTTPS] stores integrity data"
+        db -> spa "[HTTPS] returns integrity data"
+        spa -> s3 "[HTTPS] stores frontend assets"
+        s3 -> spa "[HTTPS] returns frontend assets"
+    }
+
+}
+
+views {
+    view of keaApp {
+        include *
+        include keaApp with {
+            title "L2: Container view"
+            color muted
+        }
+    }
+    
+    view of spa {
+        include *
+        include spa with {
+            title "L3: Component view"
+            color muted
+        }
+    }
+}

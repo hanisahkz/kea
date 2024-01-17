@@ -1,0 +1,13 @@
+---
+title: "Kea App"
+---
+graph TB
+  subgraph KeaApp["L2: Container view"]
+    KeaApp.Spa[SPA]
+    KeaApp.Db([Local Storage])
+    KeaApp.S3[S3 bucket]
+  end
+  KeaApp.Spa -. "[HTTPS] stores integrity data" .-> KeaApp.Db
+  KeaApp.Spa -. "[HTTPS] stores frontend assets" .-> KeaApp.S3
+  KeaApp.Db -. "[HTTPS] returns integrity data" .-> KeaApp.Spa
+  KeaApp.S3 -. "[HTTPS] returns frontend assets" .-> KeaApp.Spa
