@@ -12,8 +12,11 @@ on:
           - staging
 jobs:
   deploy:
-    name:
+    name: Deploy app
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     strategy:
       matrix:
         node-version: ["18.x"]
@@ -24,9 +27,10 @@ jobs:
         uses: actions/setup-node@v3
       - name: Clean install project
         run: npm ci && npm run build
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::362001164764:role/deployer
+          aws-region: us-east-1
       - name: Deploy app
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEYS }}
-          AWS_DEFAULT_REGION: us-east-1
         run: npx sst deploy --stage nz-staging
