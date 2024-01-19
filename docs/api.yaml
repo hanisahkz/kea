@@ -1,0 +1,26 @@
+swagger: "2.0"
+info:
+  title: Kea app
+  description: Kea app API.
+  version: 1.0.0
+host: d1v8j3c11uu4rm.cloudfront.net
+basePath: /
+schemes:
+  - https
+paths:
+  /:
+    get:
+      summary: Returns the homepage to Data Integrity Checker.
+      produces:
+        - text/html
+      responses:
+        200:
+          description: OK
+  /integrity:
+    get:
+      summary: Returns the homepage to Data Integrity Checker.
+      produces:
+        - text/html
+      responses:
+        200:
+          description: OK
